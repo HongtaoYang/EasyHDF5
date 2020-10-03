@@ -40,19 +40,8 @@ class HDFConnection:
             img_arr = np.array(Image.open(img_path))
 
             hdf_node_name = Path(insert_to).joinpath(img_path.relative_to(image_root).with_suffix(""))
-            # print(img_path.relative_to(image_root))
-            # print(hdf_node_name)
             self.insert_node(str(hdf_node_name), data=img_arr)
 
         
     def close(self) -> None:
         self.connection.close()
-
-
-
-if __name__ == "__main__":
-    hdf = HDFConnection("temp.hdf5", driver="core", backing_store=False)
-
-    hdf.insert_directory("tests/data", "/")
-
-    hdf.close()
