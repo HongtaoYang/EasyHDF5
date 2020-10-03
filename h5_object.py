@@ -14,7 +14,7 @@ class HDFConnection:
         self.connection = h5py.File(self.filename, mode="a", **kwargs)
 
     
-    def insert_node(self, node_name: str, data: np.ndarray = None, attrs: Dict = {}) -> None:
+    def insert_node(self, node_name: str, data: np.ndarray = None, attrs: Dict = None) -> None:
         """
         Insert a new node into the hdf5 file. The node can either be a `Group` or a `Dataset`.
         Args:
@@ -29,10 +29,12 @@ class HDFConnection:
 
         if data is not None:
             dst = self.connection.create_dataset(node_name, data=data, shuffle=True, fletcher32=True, compression="gzip")
-            dst.attrs.update(attrs)
+            if attrs is not None:
+                dst.attrs.update(attrs)
         else:
             grp = self.connection.create_group(node_name)
-            grp.attrs.update(attrs)
+            if attrs is not None:
+                dst.attrs.update(attrs)
 
     def insert_directory(self, image_root: str, insert_to: str) -> None:
         all_image_paths = Path(image_root).glob("**/*.jpg")
